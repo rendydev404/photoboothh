@@ -3,19 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photobooth Pro</title>
+    <title>Pixel Photobooth</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: url('https://source.unsplash.com/random/1920x1080?abstract,gradient') no-repeat center center/cover;
-            background-attachment: fixed;
+        :root {
+            --pixel-border: 4px solid #000;
+            --pixel-shadow: 6px 6px 0px #000;
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #fca5a5;
+            background-image:
+                linear-gradient(45deg, #f87171 25%, transparent 25%, transparent 75%, #f87171 75%, #f87171),
+                linear-gradient(45deg, #f87171 25%, transparent 25%, transparent 75%, #f87171 75%, #f87171);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            color: #000;
+            text-transform: uppercase;
+        }
+        .pixel-box {
+            background-color: #fff;
+            border: var(--pixel-border);
+            box-shadow: var(--pixel-shadow);
+            border-radius: 0;
+        }
+        .pixel-button {
+            border: var(--pixel-border);
+            box-shadow: 4px 4px 0px #000;
+            transition: all 0.1s;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+        .pixel-button:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px #000;
+        }
+        .pixel-input {
+            border: var(--pixel-border);
+            background-color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+        }
+        .pixel-input:focus {
+            outline: none;
+            background-color: #fef08a;
         }
         #flash {
             position: fixed;
@@ -44,85 +79,89 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 text-gray-800">
+<body class="min-h-screen flex items-center justify-center p-4">
     <div id="flash"></div>
-    <div class="glass p-6 md:p-8 rounded-3xl shadow-2xl w-full max-w-6xl flex flex-col items-center transition-all">
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-8 text-white drop-shadow-lg text-center tracking-wide">✨ Photobooth Pro</h1>
+    <div class="pixel-box p-6 md:p-8 w-full max-w-6xl flex flex-col items-center">
+        <h1 class="text-2xl md:text-4xl mb-8 text-black text-center" style="text-shadow: 2px 2px 0px #fff, -2px -2px 0px #fff, 2px -2px 0px #fff, -2px 2px 0px #fff;">👾 Pixel Photobooth</h1>
 
         <div class="flex flex-col lg:flex-row gap-8 w-full">
             <!-- Left Side: Controls & Video -->
             <div class="flex-1 flex flex-col gap-5 relative w-full lg:w-1/2">
                 <!-- Camera View -->
-                <div class="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white/50 bg-black aspect-[4/3] flex items-center justify-center group">
+                <div class="relative bg-black aspect-[4/3] flex items-center justify-center pixel-box p-2">
                     <video id="video" autoplay class="w-full h-full object-cover"></video>
                     <!-- Timer Display overlay -->
                     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div class="text-[8rem] font-black text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] opacity-90 transition-transform" id="timer"></div>
+                        <div class="text-[8rem] text-white opacity-90 transition-transform" id="timer" style="text-shadow: 8px 8px 0px #000;"></div>
                     </div>
                 </div>
 
                 <!-- Controls -->
-                <div class="bg-white/95 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
+                <div class="pixel-box p-6 flex flex-col gap-4">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">⏳ Timer (Detik)</label>
-                            <input type="number" id="timerValue" min="1" max="10" value="3" class="w-full p-2.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all font-medium text-center">
+                            <label class="block text-xs mb-2">⏳ Timer(s)</label>
+                            <input type="number" id="timerValue" min="1" max="10" value="3" class="pixel-input w-full p-2 text-center">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">📸 Jumlah Foto</label>
-                            <input type="number" id="photoCount" min="1" max="6" value="3" class="w-full p-2.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all font-medium text-center">
+                            <label class="block text-xs mb-2">📸 Jumlah</label>
+                            <input type="number" id="photoCount" min="1" max="6" value="3" class="pixel-input w-full p-2 text-center">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">🎨 Filter Kamera</label>
-                            <select id="filter" class="w-full p-2.5 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all font-medium bg-white">
-                                <option value="none">Tanpa Filter</option>
-                                <option value="grayscale(100%)">Grayscale (Hitam Putih)</option>
-                                <option value="sepia(100%)">Sepia (Vintage)</option>
-                                <option value="invert(100%)">Invert (Negatif)</option>
-                                <option value="blur(3px)">Blur (Kabur)</option>
-                                <option value="contrast(200%)">Kontras Tinggi</option>
-                                <option value="brightness(150%)">Lebih Cerah</option>
-                                <option value="saturate(200%)">Saturasi Tinggi</option>
-                                <option value="hue-rotate(90deg)">Warna Unik</option>
+                            <label class="block text-xs mb-2">🎨 Filter</label>
+                            <select id="filter" class="pixel-input w-full p-2 bg-white">
+                                <option value="none">Normal</option>
+                                <option value="grayscale(100%)">B/W</option>
+                                <option value="sepia(100%)">Retro</option>
+                                <option value="invert(100%)">Invert</option>
+                                <option value="contrast(200%)">High Contrast</option>
+                                <option value="hue-rotate(90deg)">Alien</option>
+                                <option value="saturate(300%)">Vivid</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">🖼️ Warna Frame</label>
-                            <div class="flex gap-2">
-                                <input type="color" id="frameColor" value="#ffffff" class="w-full h-[46px] p-1 border-2 border-gray-200 rounded-xl cursor-pointer bg-white transition-all">
-                            </div>
+                            <label class="block text-xs mb-2">🖼️ Frame Style</label>
+                            <select id="frameStyle" class="pixel-input w-full p-2 bg-white">
+                                <option value="classic">Classic White</option>
+                                <option value="pixel-hearts">Pixel Hearts</option>
+                                <option value="arcade">Arcade Neon</option>
+                                <option value="cute-cats">Cute Cats</option>
+                                <option value="retro-game">Retro 8-bit</option>
+                                <option value="spooky">Spooky</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="flex flex-wrap sm:flex-nowrap gap-3 mt-2">
-                        <button class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1 active:translate-y-0" id="capture">
-                            📸 Mulai Foto
+                    <div class="flex flex-wrap sm:flex-nowrap gap-3 mt-4">
+                        <button class="flex-1 bg-blue-500 hover:bg-blue-400 text-white py-3 px-2 pixel-button" id="capture">
+                            START
                         </button>
-                        <button class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg hidden transition-transform transform hover:-translate-y-1 active:translate-y-0" id="clear">
-                            🗑️ Ulangi
+                        <button class="flex-1 bg-red-500 hover:bg-red-400 text-white py-3 px-2 hidden pixel-button" id="clear">
+                            RETRY
                         </button>
-                        <button class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg hidden transition-transform transform hover:-translate-y-1 active:translate-y-0" id="download">
-                            ⬇️ Simpan Hasil
+                        <button class="flex-1 bg-green-500 hover:bg-green-400 text-white py-3 px-2 hidden pixel-button" id="download">
+                            SAVE
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- Right Side: Photo Strip Output -->
-            <div class="flex-1 flex flex-col items-center justify-center bg-black/30 p-8 rounded-2xl shadow-inner min-h-[500px] max-h-[80vh] overflow-y-auto strip-scroll w-full lg:w-1/2 relative">
+            <div class="flex-1 flex flex-col items-center justify-center p-8 min-h-[500px] max-h-[80vh] overflow-y-auto strip-scroll w-full lg:w-1/2 relative bg-black border-[4px] border-black">
 
-                <div id="photoStripContainer" class="p-4 pb-12 shadow-2xl transition-all duration-300 transform rotate-[-1deg] hover:rotate-0 hover:scale-[1.02] origin-top" style="display: none; background-color: #ffffff;">
+                <div id="photoStripContainer" class="p-4 pb-12 transition-all duration-300 origin-top pixel-box" style="display: none; background-color: #ffffff;">
                     <div id="photoStrip" class="flex flex-col gap-4"></div>
-                    <div class="text-center mt-6 font-black tracking-[0.2em] text-xl" id="stripText" style="color: #000000;">PHOTOBOOTH</div>
-                    <div class="text-center mt-1 font-medium tracking-widest text-xs opacity-70" id="dateText"></div>
+                    <div class="text-center mt-6 text-xl" id="stripText" style="color: #000000; font-family: 'Press Start 2P', cursive;">PHOTOBOOTH</div>
+                    <div class="text-center mt-2 text-[10px]" id="dateText" style="color: #000000;"></div>
                 </div>
 
-                <div id="emptyState" class="text-white/80 text-center font-medium animate-pulse">
-                    <p class="text-7xl mb-4 drop-shadow-md">🎞️</p>
-                    <p class="text-xl">Hasil foto akan muncul di sini</p>
+                <div id="emptyState" class="text-white text-center animate-pulse">
+                    <p class="text-7xl mb-6">👾</p>
+                    <p class="text-sm">READY TO PLAY</p>
+                    <p class="text-[10px] mt-2 opacity-70">INSERT COIN (PRESS START)</p>
                 </div>
             </div>
         </div>
@@ -136,7 +175,7 @@
         const filterSelect = document.getElementById('filter');
         const timerInput = document.getElementById('timerValue');
         const photoCountInput = document.getElementById('photoCount');
-        const frameColorInput = document.getElementById('frameColor');
+        const frameStyleSelect = document.getElementById('frameStyle');
         const photoStrip = document.getElementById('photoStrip');
         const photoStripContainer = document.getElementById('photoStripContainer');
         const emptyState = document.getElementById('emptyState');
@@ -160,21 +199,33 @@
             video.style.filter = filterSelect.value;
         });
 
-        // Change Frame Color and Auto-adjust Text Color
-        frameColorInput.addEventListener('input', () => {
-            photoStripContainer.style.backgroundColor = frameColorInput.value;
+        // Change Frame Style
+        const frameStyles = {
+            'classic': { bg: '#ffffff', text: '#000000', pattern: 'none' },
+            'pixel-hearts': { bg: '#ffb3ba', text: '#d9138a', pattern: 'hearts' },
+            'arcade': { bg: '#2b00ff', text: '#00ffcc', pattern: 'grid' },
+            'cute-cats': { bg: '#ffe5b4', text: '#8b4513', pattern: 'paws' },
+            'retro-game': { bg: '#8fbc8f', text: '#000000', pattern: 'dots' },
+            'spooky': { bg: '#2a0845', text: '#ff5e00', pattern: 'bats' }
+        };
 
-            // Calculate brightness
-            const hex = frameColorInput.value.replace('#', '');
-            const r = parseInt(hex.substr(0, 2), 16);
-            const g = parseInt(hex.substr(2, 2), 16);
-            const b = parseInt(hex.substr(4, 2), 16);
-            const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-
-            const textColor = (yiq >= 128) ? '#000000' : '#ffffff';
-            stripText.style.color = textColor;
-            dateText.style.color = textColor;
+        frameStyleSelect.addEventListener('change', () => {
+            applyFrameStyle();
         });
+
+        function applyFrameStyle() {
+            const style = frameStyles[frameStyleSelect.value];
+            photoStripContainer.style.backgroundColor = style.bg;
+            stripText.style.color = style.text;
+            dateText.style.color = style.text;
+
+            // Remove previous background patterns if any, we'll handle drawing decorations on the canvas instead,
+            // or we could add background-image to the container. Let's keep the container clean and
+            // apply decorations to the canvas generated images.
+        }
+
+        // Initialize default style
+        applyFrameStyle();
 
         // Main Capture Logic
         captureBtn.addEventListener('click', async () => {
@@ -249,16 +300,62 @@
             ctx.filter = getComputedStyle(video).filter;
 
             // Mirror image horizontally to match preview
+            ctx.save();
             ctx.translate(canvas.width, 0);
             ctx.scale(-1, 1);
 
-            // Draw frame
+            // Draw camera feed
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            ctx.restore();
+
+            // Add decorations based on selected frame style
+            ctx.filter = 'none'; // reset filter for decorations
+            const styleName = frameStyleSelect.value;
+            const style = frameStyles[styleName];
+
+            ctx.font = '60px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            const padding = 40;
+
+            if (style.pattern === 'hearts') {
+                ctx.fillText('💖', padding, padding);
+                ctx.fillText('💖', canvas.width - padding, padding);
+                ctx.fillText('💖', padding, canvas.height - padding);
+                ctx.fillText('💖', canvas.width - padding, canvas.height - padding);
+            } else if (style.pattern === 'grid') {
+                ctx.strokeStyle = '#00ffcc';
+                ctx.lineWidth = 10;
+                ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+                ctx.fillText('👾', padding + 20, padding + 20);
+                ctx.fillText('👾', canvas.width - padding - 20, canvas.height - padding - 20);
+            } else if (style.pattern === 'paws') {
+                ctx.fillText('🐾', padding, padding);
+                ctx.fillText('😻', canvas.width - padding, padding);
+                ctx.fillText('🐾', padding, canvas.height - padding);
+                ctx.fillText('😸', canvas.width - padding, canvas.height - padding);
+            } else if (style.pattern === 'dots') {
+                ctx.fillStyle = '#000000';
+                for(let i=0; i<canvas.width; i+=40) {
+                    ctx.fillRect(i, 0, 20, 20);
+                    ctx.fillRect(i, canvas.height - 20, 20, 20);
+                }
+                for(let i=0; i<canvas.height; i+=40) {
+                    ctx.fillRect(0, i, 20, 20);
+                    ctx.fillRect(canvas.width - 20, i, 20, 20);
+                }
+            } else if (style.pattern === 'bats') {
+                ctx.fillText('🦇', padding, padding);
+                ctx.fillText('🦇', canvas.width - padding, padding);
+                ctx.fillText('🎃', padding, canvas.height - padding);
+                ctx.fillText('🎃', canvas.width - padding, canvas.height - padding);
+            }
 
             // Create image element
             const img = document.createElement('img');
             img.src = canvas.toDataURL('image/jpeg', 0.9);
-            img.className = 'w-64 md:w-72 h-auto object-cover border-2 border-black/5 rounded shadow-sm transition-transform hover:scale-105 duration-300';
+            img.className = 'w-64 md:w-72 h-auto object-cover border-[4px] border-black transition-transform hover:scale-105 duration-300';
 
             photoStrip.appendChild(img);
             photos.push(img);
@@ -269,16 +366,17 @@
             // Temporarily remove transform for clean capture
             const originalTransform = photoStripContainer.style.transform;
             photoStripContainer.style.transform = 'none';
-            downloadBtn.innerHTML = '⏳ Menyimpan...';
+            downloadBtn.innerHTML = 'WAIT...';
 
+            const currentStyle = frameStyles[frameStyleSelect.value];
             html2canvas(photoStripContainer, {
-                backgroundColor: frameColorInput.value,
+                backgroundColor: currentStyle.bg,
                 scale: 3, // High quality
                 useCORS: true
             }).then(canvas => {
                 // Restore transform
                 photoStripContainer.style.transform = originalTransform;
-                downloadBtn.innerHTML = '⬇️ Simpan Hasil';
+                downloadBtn.innerHTML = 'SAVE';
 
                 const link = document.createElement('a');
                 link.href = canvas.toDataURL('image/jpeg', 0.9);
